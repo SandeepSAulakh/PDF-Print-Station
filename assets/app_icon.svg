@@ -1,0 +1,26 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="256" height="256" rx="32" fill="#2B2B2B"/>
+    
+    <!-- Workstation Base -->
+    <rect x="32" y="160" width="192" height="48" rx="8" fill="#3A3A3A"/>
+    
+    <!-- Monitor/Screen -->
+    <rect x="48" y="48" width="160" height="112" rx="8" fill="#3A3A3A"/>
+    <rect x="56" y="56" width="144" height="88" rx="4" fill="#4CAF50"/>
+    
+    <!-- PDF Text -->
+    <text x="96" y="108" font-family="Arial" font-size="32" fill="white" font-weight="bold">PDF</text>
+    
+    <!-- Print Lines -->
+    <rect x="72" y="120" width="112" height="4" rx="2" fill="white" opacity="0.7"/>
+    <rect x="72" y="128" width="112" height="4" rx="2" fill="white" opacity="0.7"/>
+    
+    <!-- Stand -->
+    <path d="M128 160L148 140H108L128 160Z" fill="#4A4A4A"/>
+    
+    <!-- Control Panel -->
+    <rect x="48" y="172" width="160" height="24" rx="4" fill="#4A4A4A"/>
+    <circle cx="64" cy="184" r="6" fill="#4CAF50"/>
+    <circle cx="88" cy="184" r="6" fill="#FFA500"/>
+</svg> 
