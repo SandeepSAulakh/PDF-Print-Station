@@ -60,15 +60,26 @@ def create_directories(project_root):
         Path(dir_path).mkdir(exist_ok=True)
 
 def make_run_script_executable(project_root):
-    """Make run.sh executable on Unix systems"""
-    if sys.platform != "win32":
+    """Make run scripts executable on Unix systems"""
+    if sys.platform == "win32":
+        # Check for run.bat
+        run_script = os.path.join(project_root, "run.bat")
+        if not os.path.exists(run_script):
+            # Create run.bat if it doesn't exist
+            with open(run_script, 'w') as f:
+                f.write('@echo off\ncall venv\\Scripts\\activate\npython pdf_printer_app.py\npause')
+    else:
+        # Check for run.sh
         run_script = os.path.join(project_root, "run.sh")
-        if os.path.exists(run_script):
-            try:
-                os.chmod(run_script, 0o755)  # rwxr-xr-x
-                print("Made run.sh executable")
-            except Exception as e:
-                print(f"Warning: Could not make run.sh executable: {e}")
+        if not os.path.exists(run_script):
+            # Create run.sh if it doesn't exist
+            with open(run_script, 'w') as f:
+                f.write('#!/bin/bash\nsource venv/bin/activate\npython3 pdf_printer_app.py')
+        try:
+            os.chmod(run_script, 0o755)  # rwxr-xr-x
+            print("Made run script executable")
+        except Exception as e:
+            print(f"Warning: Could not make run script executable: {e}")
 
 def copy_assets(project_root):
     """Copy necessary assets if they don't exist"""
@@ -115,15 +126,9 @@ def main():
         print("\nSetup completed successfully!")
         print("\nTo run the application:")
         if sys.platform == "win32":
-            print(f"Option 1: Double-click {os.path.join(project_root, 'run.bat')}")
-            print("Option 2: Run these commands:")
-            print(f"1. {os.path.join(project_root, 'venv\\Scripts\\activate')}")
-            print("2. python pdf_printer_app.py")
+            print(f"Double-click 'run.bat' in the installation folder")
         else:
-            print(f"Option 1: Run {os.path.join(project_root, 'run.sh')}")
-            print("Option 2: Run these commands:")
-            print(f"1. source {os.path.join(project_root, 'venv/bin/activate')}")
-            print("2. python3 pdf_printer_app.py")
+            print(f"Run './run.sh' in the installation folder")
         
     except Exception as e:
         print(f"Error during setup: {e}")
