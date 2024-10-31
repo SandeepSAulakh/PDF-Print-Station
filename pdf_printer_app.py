@@ -1343,16 +1343,30 @@ def main():
     os.environ['QT_ACCESSIBILITY'] = '0'
     os.environ['QT_LOGGING_RULES'] = '*.debug=false;qt.accessibility.core=false'
     
-    print(f"Python version: {sys.version}")
-    print(f"PyQt5 version: {PYQT_VERSION_STR}")
-    print(f"PyMuPDF version: {fitz.version[0]}")
-    print(f"Current working directory: {os.getcwd()}")
+    # Set process name before creating QApplication
+    if sys.platform == "darwin":  # macOS specific
+        try:
+            from Foundation import NSBundle
+            bundle = NSBundle.mainBundle()
+            info = bundle.localizedInfoDictionary() or bundle.infoDictionary()
+            info['CFBundleName'] = "PDF Print Station"
+        except:
+            pass
     
     app = QApplication(sys.argv)
     app.setApplicationName("PDF Print Station")
     app.setApplicationDisplayName("PDF Print Station")
     app.setOrganizationName("Sandeep S Aulakh")
     app.setOrganizationDomain("sandeepaulakh.com")
+    
+    # Set process name for Linux
+    if sys.platform.startswith('linux'):
+        try:
+            import ctypes
+            libc = ctypes.cdll.LoadLibrary('libc.so.6')
+            libc.prctl(15, b'PDF Print Station', 0, 0, 0)
+        except:
+            pass
     
     try:
         print("Initializing PDFPrinterApp...")

@@ -98,7 +98,7 @@ def copy_assets(project_root):
 def create_mac_app_files(project_root):
     """Create Mac-specific application files"""
     if sys.platform == "darwin":  # Only for macOS
-        # Create Info.plist
+        # Create Info.plist with LSEnvironment
         info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -119,6 +119,11 @@ def create_mac_app_files(project_root):
     <string>run.sh</string>
     <key>CFBundleIconFile</key>
     <string>app_icon.icns</string>
+    <key>LSEnvironment</key>
+    <dict>
+        <key>APP_NAME</key>
+        <string>PDF Print Station</string>
+    </dict>
 </dict>
 </plist>'''
         
