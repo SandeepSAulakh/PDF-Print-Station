@@ -124,11 +124,24 @@ def main():
         make_run_script_executable(project_root)
         
         print("\nSetup completed successfully!")
+        
+        # Get full path for user instructions
+        app_dir = os.path.abspath(project_root)
+        
+        # Change directory and notify user
+        os.chdir(app_dir)
+        print(f"\nChanged to application directory:")
+        print(f"{app_dir}")
+        
         print("\nTo run the application:")
         if sys.platform == "win32":
-            print(f"Double-click 'run.bat' in the installation folder")
+            print("Double-click 'run.bat'")
+            # For command prompt users
+            print("\nOr type:")
+            print("run.bat")
         else:
-            print(f"Run './run.sh' in the installation folder")
+            print("Type:")
+            print("./run.sh")
         
     except Exception as e:
         print(f"Error during setup: {e}")
