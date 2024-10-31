@@ -95,6 +95,38 @@ def copy_assets(project_root):
         if os.path.exists(src) and not os.path.exists(dst):
             shutil.copy2(src, dst)
 
+def create_mac_app_files(project_root):
+    """Create Mac-specific application files"""
+    if sys.platform == "darwin":  # Only for macOS
+        # Create Info.plist
+        info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>PDF Print Station</string>
+    <key>CFBundleDisplayName</key>
+    <string>PDF Print Station</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.sandeepaulakh.pdfprintstation</string>
+    <key>CFBundleVersion</key>
+    <string>1.0.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleExecutable</key>
+    <string>run.sh</string>
+    <key>CFBundleIconFile</key>
+    <string>app_icon.icns</string>
+</dict>
+</plist>'''
+        
+        plist_path = os.path.join(project_root, 'Info.plist')
+        with open(plist_path, 'w') as f:
+            f.write(info_plist)
+        print("Created Info.plist for macOS")
+
 def main():
     try:
         print("Starting PDF Print Station setup...")
@@ -120,6 +152,9 @@ def main():
         create_directories(project_root)
         copy_assets(project_root)
         
+        # Create Mac-specific files
+        create_mac_app_files(project_root)
+        
         # Make run script executable
         make_run_script_executable(project_root)
         
@@ -136,12 +171,15 @@ def main():
         print("\nTo run the application:")
         if sys.platform == "win32":
             print("Double-click 'run.bat'")
-            # For command prompt users
             print("\nOr type:")
             print("run.bat")
         else:
             print("Type:")
             print("./run.sh")
+            print("\nOr with full path:")
+            print(f"{os.path.join(app_dir, 'run.sh')}")
+            print("\nNote: Make sure the script is executable:")
+            print("chmod +x run.sh")
         
     except Exception as e:
         print(f"Error during setup: {e}")

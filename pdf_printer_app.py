@@ -1349,6 +1349,10 @@ def main():
     print(f"Current working directory: {os.getcwd()}")
     
     app = QApplication(sys.argv)
+    app.setApplicationName("PDF Print Station")
+    app.setApplicationDisplayName("PDF Print Station")
+    app.setOrganizationName("Sandeep S Aulakh")
+    app.setOrganizationDomain("sandeepaulakh.com")
     
     try:
         print("Initializing PDFPrinterApp...")
