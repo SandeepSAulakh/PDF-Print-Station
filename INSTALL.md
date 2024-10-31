@@ -10,37 +10,39 @@ On Windows:
 python setup.py
 ```
 
+On macOS/Linux:
+```bash
+python3 setup.py
+```
+
 The setup script will:
 - Create necessary directories
 - Set up virtual environment
 - Install required dependencies
 - Configure the application
 
-## Manual Installation
+## Running the Application
 
-1. Clone the repository:
-```bash
-git clone https://github.com/SandeepSAulakh/PDF-Print-Station.git
-cd PDF-Print-Station
-```
+After installation, you have two options:
 
-2. Create and activate virtual environment:
+### Option 1: Using Run Scripts
+On Windows:
+- Double-click `run.bat`
 
+On macOS/Linux:
+- Run `./run.sh` in terminal
+
+### Option 2: Manual Activation
 On Windows:
 ```bash
-python -m venv venv
 venv\Scripts\activate
+python pdf_printer_app.py
 ```
 
 On macOS/Linux:
 ```bash
-python -m venv venv
 source venv/bin/activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
+python3 pdf_printer_app.py
 ```
 
 ## Requirements
@@ -50,18 +52,11 @@ pip install -r requirements.txt
 - PyMuPDF (fitz) 1.24.12 or higher
 - Operating System: Windows, macOS, or Linux
 
-## Running the Application
-
-1. After installation, run:
-```bash
-python pdf_printer_app.py
-```
-
 ## Troubleshooting
 
 1. Virtual Environment Issues:
    - Make sure Python is in your system PATH
-   - Use `python3` instead of `python` on some systems
+   - Use `python3` instead of `python` on macOS/Linux
    - On Windows, you might need to run: `Set-ExecutionPolicy RemoteSigned -Scope Process`
 
 2. Dependency Issues:
@@ -70,7 +65,9 @@ python pdf_printer_app.py
 
 3. Permission Issues:
    - Run terminal as administrator on Windows
-   - Use `sudo` on Linux/macOS if needed
+   - On macOS/Linux:
+     - Make run script executable: `chmod +x run.sh`
+     - Use `sudo` if needed for installations
 
 ## Need Help?
 
@@ -81,4 +78,4 @@ If you encounter any issues:
    - Your operating system
    - Python version
    - Error message
-   - Steps to reproduce 
+   - Steps to reproduce
