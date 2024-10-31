@@ -108,7 +108,22 @@ def create_mac_app_bundle(project_root):
         os.makedirs(macos_path, exist_ok=True)
         os.makedirs(resources_path, exist_ok=True)
         
-        # Create Info.plist with additional keys
+        # Create launcher script directly in MacOS directory
+        launcher_path = os.path.join(macos_path, "PDF Print Station")  # Changed name
+        with open(launcher_path, "w") as f:
+            f.write('''#!/bin/bash
+cd "$(dirname "$0")"
+cd ../..
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+source venv/bin/activate
+export QT_MAC_WANTS_LAYER=1
+export DISPLAY_NAME="PDF Print Station"
+export PYAPP_DISPLAY_NAME="PDF Print Station"
+exec pythonw pdf_printer_app.py
+''')
+        os.chmod(launcher_path, 0o755)
+        
+        # Create Info.plist with updated executable name
         info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -124,7 +139,7 @@ def create_mac_app_bundle(project_root):
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleExecutable</key>
-    <string>MacLauncher.command</string>
+    <string>PDF Print Station</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon.icns</string>
     <key>LSMinimumSystemVersion</key>
@@ -142,32 +157,13 @@ def create_mac_app_bundle(project_root):
         with open(os.path.join(contents_path, "Info.plist"), "w") as f:
             f.write(info_plist)
         
-        # Create and copy launcher script
-        launcher_src = os.path.join(project_root, "MacLauncher.command")
-        with open(launcher_src, "w") as f:
-            f.write('''#!/bin/bash
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd "$DIR"
-export PYTHONPATH="${PYTHONPATH}:${DIR}"
-source venv/bin/activate
-export QT_MAC_WANTS_LAYER=1
-export DISPLAY_NAME="PDF Print Station"
-export PYAPP_DISPLAY_NAME="PDF Print Station"
-exec pythonw pdf_printer_app.py
-''')
-        os.chmod(launcher_src, 0o755)
-        
-        # Copy launcher to MacOS directory
-        launcher_dst = os.path.join(macos_path, "MacLauncher.command")
-        shutil.copy2(launcher_src, launcher_dst)
-        os.chmod(launcher_dst, 0o755)
-        
         # Copy icon if exists
         icon_src = os.path.join(project_root, "assets", "app_icon.icns")
         if os.path.exists(icon_src):
             shutil.copy2(icon_src, os.path.join(resources_path, "AppIcon.icns"))
         
         print(f"Created Mac app bundle: {app_name}")
+        print("To run: double-click 'PDF Print Station.app'")
 
 def main():
     try:
