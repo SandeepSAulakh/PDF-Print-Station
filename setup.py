@@ -95,10 +95,20 @@ def copy_assets(project_root):
         if os.path.exists(src) and not os.path.exists(dst):
             shutil.copy2(src, dst)
 
-def create_mac_app_files(project_root):
-    """Create Mac-specific application files"""
-    if sys.platform == "darwin":  # Only for macOS
-        # Create Info.plist with LSEnvironment
+def create_mac_app_bundle(project_root):
+    """Create Mac application bundle"""
+    if sys.platform == "darwin":
+        app_name = "PDF Print Station.app"
+        app_path = os.path.join(project_root, app_name)
+        contents_path = os.path.join(app_path, "Contents")
+        macos_path = os.path.join(contents_path, "MacOS")
+        resources_path = os.path.join(contents_path, "Resources")
+        
+        # Create directory structure
+        os.makedirs(macos_path, exist_ok=True)
+        os.makedirs(resources_path, exist_ok=True)
+        
+        # Create Info.plist with additional keys
         info_plist = '''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -113,12 +123,14 @@ def create_mac_app_files(project_root):
     <string>1.0.0</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
-    <key>CFBundleSignature</key>
-    <string>????</string>
     <key>CFBundleExecutable</key>
-    <string>run.sh</string>
+    <string>MacLauncher.command</string>
     <key>CFBundleIconFile</key>
-    <string>app_icon.icns</string>
+    <string>AppIcon.icns</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>10.10</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
     <key>LSEnvironment</key>
     <dict>
         <key>APP_NAME</key>
@@ -127,10 +139,35 @@ def create_mac_app_files(project_root):
 </dict>
 </plist>'''
         
-        plist_path = os.path.join(project_root, 'Info.plist')
-        with open(plist_path, 'w') as f:
+        with open(os.path.join(contents_path, "Info.plist"), "w") as f:
             f.write(info_plist)
-        print("Created Info.plist for macOS")
+        
+        # Create and copy launcher script
+        launcher_src = os.path.join(project_root, "MacLauncher.command")
+        with open(launcher_src, "w") as f:
+            f.write('''#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$DIR"
+export PYTHONPATH="${PYTHONPATH}:${DIR}"
+source venv/bin/activate
+export QT_MAC_WANTS_LAYER=1
+export DISPLAY_NAME="PDF Print Station"
+export PYAPP_DISPLAY_NAME="PDF Print Station"
+exec pythonw pdf_printer_app.py
+''')
+        os.chmod(launcher_src, 0o755)
+        
+        # Copy launcher to MacOS directory
+        launcher_dst = os.path.join(macos_path, "MacLauncher.command")
+        shutil.copy2(launcher_src, launcher_dst)
+        os.chmod(launcher_dst, 0o755)
+        
+        # Copy icon if exists
+        icon_src = os.path.join(project_root, "assets", "app_icon.icns")
+        if os.path.exists(icon_src):
+            shutil.copy2(icon_src, os.path.join(resources_path, "AppIcon.icns"))
+        
+        print(f"Created Mac app bundle: {app_name}")
 
 def main():
     try:
@@ -157,8 +194,9 @@ def main():
         create_directories(project_root)
         copy_assets(project_root)
         
-        # Create Mac-specific files
-        create_mac_app_files(project_root)
+        # Create Mac app bundle
+        if sys.platform == "darwin":
+            create_mac_app_bundle(project_root)
         
         # Make run script executable
         make_run_script_executable(project_root)
@@ -178,6 +216,11 @@ def main():
             print("Double-click 'run.bat'")
             print("\nOr type:")
             print("run.bat")
+        elif sys.platform == "darwin":
+            print("To run the application:")
+            print(f"Double-click 'PDF Print Station.app' in the installation folder")
+            print("\nOr type:")
+            print("open 'PDF Print Station.app'")
         else:
             print("Type:")
             print("./run.sh")
