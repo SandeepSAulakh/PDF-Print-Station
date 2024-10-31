@@ -2,8 +2,6 @@
 
 A modern, user-friendly PDF management and printing application built with Python and PyQt5. This application provides an efficient way to manage, preview, and print multiple PDF files with a clean, dark-mode interface.
 
-Made with ❤️ by [@SandeepSAulakh](https://github.com/SandeepSAulakh)
-
 ## Features
 
 ### File Management
